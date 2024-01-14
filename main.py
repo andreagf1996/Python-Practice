@@ -1,43 +1,48 @@
-import random
+from random import randint
 
-x = int(input("Let's play a game! Pick a number greater than 0: "))
+board = []
 
+for x in range(0, 5):
+    board.append(["O"] * 5)
 
-def guess(x):
-    random_num = random.randint(1, x)
-    guess = 0
-    while guess != random_num:
-        guess = int(input(f"Guess a number between 1 and {x}: "))
-        if guess < random_num:
-            print("Too low! Try again.")
-        elif guess > random_num:
-            print("Too high! Try again.")
+def print_board(board):
+    for row in board:
+        print(" ".join(row))
 
-    print(f"Look at you, stud muffin. You got {random_num} and beat me!")
+print_board(board)
 
+def random_row(board):
+    return randint(0, len(board) - 1)
 
-print(guess(x))
+def random_col(board):
+    return randint(0, len(board[0]) - 1)
 
-print("Ok, now let's switch! You pick a number and I'LL guess it!")
+ship_row = random_row(board)
+ship_col = random_col(board)
+#print(ship_row)
+#print(ship_col)
 
-y = int(input("I should guess between 1 and what other number? "))
+# Everything from here on should be in your for loop
+# don't forget to properly indent!
+for turn in range(4):
+    trnlst = ["First", "Second", "Third", "Fourth"]
+    past_guesses =[]
+    print(trnlst[turn] + " turn")
+    guess_row = int(input("Guess Row: "))
+    guess_col = int(input("Guess Col: "))
 
-
-def computer_guess(y):
-    low = 1
-    high = y
-    feedback = ''
-    while feedback != 'c':
-        if low != high:
-            guess = random.randint(low, high)
+    if guess_row == ship_row and guess_col == ship_col:
+        print("Congratulations! You sank my battleship!")
+        break
+    else:
+        if guess_row not in range(5) or \
+                guess_col not in range(5):
+            print("Oops, that's not even in the ocean.")
+        elif board[guess_row][guess_col] == "X":
+            print( "You guessed that one already." )
         else:
-            guess = high
-        feedback = input(f"Is {guess} too high (H), too low (L), or correct (C)?").lower()
-        if feedback == "h":
-            high = guess - 1
-        elif feedback == "l":
-            low = guess + 1
-
-    print(f'Yay! I guessed {guess} correctly!')
-
-print(computer_guess(y))
+            print("You missed my battleship!")
+            board[guess_row][guess_col] = "X"
+            print_board(board)
+        if turn ==3:
+            print("You lost! HA! \nGame Over.")
